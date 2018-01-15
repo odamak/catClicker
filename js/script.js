@@ -1,6 +1,5 @@
-const NUMBER_CATS = 5;
-
 $(function(){
+    const NUMBER_CATS = 5;
 
     var model = {
         cats : [],
@@ -10,7 +9,6 @@ $(function(){
                     elem.name = 'cat'+i;
                     elem.clickCount = 0;
                     elem.photo = 'pictures/cat_picture'+i+'.jpg';
-                    console.log("elem"+i+" "+elem.name+elem.clickCount);
                     this.cats.push(elem);
                 }
                 return this.cats;
@@ -25,7 +23,6 @@ $(function(){
             viewCat.init();
         },
         getCounter: function(numberCat) {
-            console.log ("model.cats[numberCat] "+model.cats[numberCat])
             return model.cats[numberCat].clickCount;
         },
         updateCounter: function(numberCat) {
@@ -37,7 +34,7 @@ $(function(){
     var viewButton = {
         displayButtons : function() {
             for (let i=0; i< NUMBER_CATS; i++){
-                let str = '<button id=\'button'+i+'\'>cat '+i+'</button>';
+                let str = `<button id='button`+i+`'>cat `+i+`</button>`;
                 let $input = $(str);
                 $input.appendTo($("#catlist"));
             }
@@ -63,10 +60,9 @@ $(function(){
 		    $(this.cats[i]).hide();
 	        }
         },
-        //debug to find problem
         bindCounterToCat: function (idNumber){
             let catId = 'cat' + idNumber;
-            $('#' + catId + ' > span').value(octopus.getCounter(idNumber));
+            $('#' + catId + ' span:nth-child(2)').val(octopus.getCounter(idNumber));
         },
         init: function() {
                 this.renderCats();
@@ -74,17 +70,16 @@ $(function(){
 	            this.bindCounterToCat(i);
                 }
                 this.hideAllCats();
-                $("#cat1").show();       
+                $("#cat0").show();       
         },
         renderCats: function(){
-            for (let i=NUMBER_CATS-1; i>=0; i-- ){
+            for (let i=0; i<NUMBER_CATS; i++ ){
                 let str = `<div class="cat" id="cat`+ i + `" >
-                <span class="counter">${octopus.getCounter(i)} clicks</span>`;
-                $('#catlist').after(str);
+                <span class="counter">${octopus.getCounter(i)}</span><span> clicks</span>`;
+                $("div").last().after(str);
                 let catIdIdentifier= '#cat'+i;
-                let identifier = catIdIdentifier+" "+"span";
+                let identifier = catIdIdentifier+" "+"span:nth-child(2)";
                 $(identifier).after("<br>");
-                console.log("identifier.next() is ="+($(identifier).next()));
                 $(identifier).next().after(`<img class="clicker" src="pictures/cat_picture${i}.jpeg">
                 </div>`);
             }
@@ -92,4 +87,6 @@ $(function(){
     };
 
     octopus.init();
+    
 });
+
