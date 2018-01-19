@@ -13,6 +13,7 @@ $(function(){
                     elem.photo = 'pictures/cat_picture'+i+'.jpg';
                     this.cats.push(elem);
                 }
+                currentCat = this.cats[0];
                 return this.cats;
         }
     };
@@ -29,8 +30,12 @@ $(function(){
         setCurrentCat: function(catIndex) {
             //save previous changes made on currentCat
             model.cats[model.currentCat.index] = model.currentCat
+            //get the new selected cat and update value of currentCat
             let selectedCat = model.cats[catIndex];
             model.currentCat = selectedCat;
+            //rerender the viewCat section of page using new value of currentCat
+            viewCat.render();
+            //return the new value of currentCat
             return selectedCat;
         },
         updateCounterCurrentCat: function() {
@@ -43,21 +48,17 @@ $(function(){
     };
 
     var viewButton = {
-        displayButtons : function() {
+        init: function() {
+            let cats = octopus.getCats();
             for (let i=0; i< NUMBER_CATS; i++){
-                let str = `<button id='button${i}'>${octopus.getCats[i].name}</button>`;
-                let $input = $(str);
-                $input.appendTo($("#catlist"));
+                let $button = `<button id='button${i}'>${cats[i].name}</button>`;
+                $button.appendTo($("#catButtons"));
             }
         },
-        bindButtonToCat: function(idNumber) {
+        render: function(idNumber) {
             $("#button"+idNumber).click(function(){
-                viewCat.renderCat(idNumber);
+                octopus.setCurrentCat(idNumber);
             })
-        },
-        bindButtonsToCat: function(){
-            for(let i=0; i< NUMBER_CATS; i++)
-                this.bindButtonToCat(i);
         },
         init: function() {
             this.displayButtons();
