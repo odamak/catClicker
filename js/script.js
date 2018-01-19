@@ -3,9 +3,11 @@ $(function(){
 
     var model = {
         cats : [],
+        currentCat: null,
         init: function() {
                 for (let i = 0; i<NUMBER_CATS; i++){
                     let elem = new Object()
+                    elem.index = i;
                     elem.name = 'cat'+i;
                     elem.clickCount = 0;
                     elem.photo = 'pictures/cat_picture'+i+'.jpg';
@@ -15,26 +17,35 @@ $(function(){
         }
     };
 
-
     var octopus = {
         init: function() {
             model.init();
             viewButton.init();
             viewCat.init();
         },
-        getCounter: function(numberCat) {
-            return model.cats[numberCat].clickCount;
+        getCurrentCat: function(){
+            return model.currentCat;
         },
-        updateCounter: function(numberCat) {
-            model.cats[numberCat].clickCount += 1
-            return (model.cats[numberCat].clickCount);
+        setCurrentCat: function(catIndex) {
+            //save previous changes made on currentCat
+            model.cats[model.currentCat.index] = model.currentCat
+            let selectedCat = model.cats[catIndex];
+            model.currentCat = selectedCat;
+            return selectedCat;
+        },
+        updateCounterCurrentCat: function() {
+            model.currentCat.clickCount += 1
+            return (model.currentCat.clickCount);
+        },
+        getCats: function(){
+            return (model.cats)
         }
     };
 
     var viewButton = {
         displayButtons : function() {
             for (let i=0; i< NUMBER_CATS; i++){
-                let str = `<button id='button`+i+`'>cat `+i+`</button>`;
+                let str = `<button id='button${i}'>${octopus.getCats[i].name}</button>`;
                 let $input = $(str);
                 $input.appendTo($("#catlist"));
             }
