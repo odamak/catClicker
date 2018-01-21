@@ -28,7 +28,6 @@ $(function () {
             return model.currentCat;
         },
         setCurrentCat: function (catIndex) {
-            console.log("call of setCurrentCat"+catIndex);
             //save previous changes made on currentCat
             model.cats[model.currentCat.index] = model.currentCat
             //get the new selected cat and update value of currentCat
@@ -39,10 +38,9 @@ $(function () {
             //return the new value of currentCat
             return selectedCat;
         },
-        updateCounterCurrentCat: function () {
-            console.log('-----------------------------');
-            console.log('call updateCounterCurrentCat');
-            model.currentCat.clickCount += 1
+        updateCounterCurrentCatAndRender: function () {
+            model.currentCat.clickCount += 1;
+            viewCat.render();
             return (model.currentCat.clickCount);
         },
         getCats: function () {
@@ -56,13 +54,10 @@ $(function () {
             for (let i = 0; i < NUMBER_CATS; i++) {
                 let buttonHtml = `<button id='button${i}'>${cats[i].name}</button>`;
                 $(buttonHtml).appendTo($("#catButtons"));
-                // $("#button" + i).click(function () {
-                //     console.log("clickbutton"+i);
-                //     octopus.setCurrentCat(i);
-                // })
+                //use of closure here, although while testing, I found out not necessary
+                //it's just cleaner
                 $("#button" + i).on( "click", (function(iCopy) {
                     return function() {
-                        console.log("event"+iCopy+" gets called");
                         octopus.setCurrentCat(iCopy);
                     };
                 })(i));
@@ -72,31 +67,26 @@ $(function () {
     }
 
     var viewCat = {
+        catName: null,
+        catCount: null,
+        catImage: null, 
         render: function () {
-            console.log("render view cat");
             let currentCat = octopus.getCurrentCat();
-            $("#cat-name").text(currentCat.name);
-            $("#cat-count").text(`${currentCat.clickCount} clicks`);
-            $("#cat-img").attr("src",currentCat.photo);
-            $("#cat-img").off().on( "click", (function() {
-                return function() {
-                    octopus.updateCounterCurrentCat();
-                    $("#cat-count").text(`${octopus.getCurrentCat().clickCount} clicks`);
-                };
-            })());
+            this.catName.text(currentCat.name);
+            this.catCount.text(`${currentCat.clickCount} clicks`);
+            this.catImage.attr("src",currentCat.photo);
+            this.catImage.off().on( "click", function() {
+                    octopus.updateCounterCurrentCatAndRender();
+                });
         },
 
         init: function () {
             let cats = octopus.getCats();
             let currentCat = octopus.getCurrentCat();
-            $("#cat-name").text(cats[0].name);
-            $("#cat-count").text(`${cats[0].clickCount} clicks`);
-            $("#cat-img").attr("src",cats[0].photo);
-            $("#cat-img").click(function () {
-                    octopus.updateCounterCurrentCat();
-                    $("#cat-count").text(`${currentCat.clickCount} clicks`);
-                    console.log("imageclick by "+octopus.getCurrentCat().name);
-            })
+            this.catName = $("#cat-name");
+            this.catCount = $("#cat-count")
+            this.catImage = $("#cat-img")
+            this.render();
         }
     };
 
