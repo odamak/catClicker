@@ -56,10 +56,17 @@ $(function () {
             for (let i = 0; i < NUMBER_CATS; i++) {
                 let buttonHtml = `<button id='button${i}'>${cats[i].name}</button>`;
                 $(buttonHtml).appendTo($("#catButtons"));
-                $("#button" + i).click(function () {
-                    console.log("clickbutton"+i);
-                    octopus.setCurrentCat(i);
-                })
+                // $("#button" + i).click(function () {
+                //     console.log("clickbutton"+i);
+                //     octopus.setCurrentCat(i);
+                // })
+                $("#button" + i).on( "click", (function(iCopy) {
+                    return function() {
+                        console.log("event"+iCopy+" gets called");
+                        octopus.setCurrentCat(iCopy);
+                    };
+                })(i));
+                
             }
         }
     }
@@ -71,11 +78,12 @@ $(function () {
             $("#cat-name").text(currentCat.name);
             $("#cat-count").text(`${currentCat.clickCount} clicks`);
             $("#cat-img").attr("src",currentCat.photo);
-            $("#cat-img").click(function () {
-                    console.log("click photo");
+            $("#cat-img").off().on( "click", (function() {
+                return function() {
                     octopus.updateCounterCurrentCat();
-                    $("#cat-count").text(`${currentCat.clickCount} clicks`);
-            })
+                    $("#cat-count").text(`${octopus.getCurrentCat().clickCount} clicks`);
+                };
+            })());
         },
 
         init: function () {
@@ -87,6 +95,7 @@ $(function () {
             $("#cat-img").click(function () {
                     octopus.updateCounterCurrentCat();
                     $("#cat-count").text(`${currentCat.clickCount} clicks`);
+                    console.log("imageclick by "+octopus.getCurrentCat().name);
             })
         }
     };
