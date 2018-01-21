@@ -4,6 +4,7 @@ $(function () {
     var model = {
         cats: [],
         currentCat: null,
+        adminMode: false,
         init: function () {
             for (let i = 0; i < NUMBER_CATS; i++) {
                 let elem = new Object()
@@ -23,6 +24,7 @@ $(function () {
             model.init();
             viewButton.init();
             viewCat.init();
+            ViewAdmin.init();
         },
         getCurrentCat: function () {
             return model.currentCat;
@@ -43,8 +45,25 @@ $(function () {
             viewCat.render();
             return (model.currentCat.clickCount);
         },
+        updateCurrentCatWithNewValuesAndSaveAndRender: function(name, click, url) {
+            model.currentCat.name = name;
+            model.currentCat.clickCount = click;
+            model.currentCat.photo = url;
+            let index = model.currentCat[index];
+            //update cat in array and rerender view
+            octopus.setCurrentCat(index);
+
+        },
         getCats: function () {
             return (model.cats)
+        },
+        setAdminVisible: function () {
+            model.adminMode = true;
+            ViewAdmin.render();
+        },
+        hideAdmin: function() {
+            model.adminMode = false;
+            viewAdmin.hideForm();
         }
     };
 
@@ -89,6 +108,54 @@ $(function () {
             this.render();
         }
     };
+
+    var ViewAdmin = {
+        init: function () {
+            this.adminDiv = $("#admin");
+            this.adminButton = $('#adminButton');
+            this.adminButton.on( "click", function() {
+                octopus.setAdminVisible;
+            });
+
+
+        },
+        render: function() {
+            let currentCat = octopus.getCurrentCat();
+            let nameCat = currentCat.name;
+            let imgUrl = currentCat.photo;
+            let clicks = currentCat.clickCount;
+            let form = `<div id="formDiv">
+            Name: <input id="getCatName" type="text" name="name" value="${nameCat}">
+            <br>
+            Img URL: <input id="getCatUrl" type="text" name="imgUrl" value="${imgUrl}">
+            <br>
+            #clicks: <input id="getCatClicks" type="text" name="clicks" value="${clicks}">
+            <br>
+            <button id="saveButton">Save</button>
+            <button id="cancelButton">Cancel</button>
+            </div>`
+            //add form to page
+            adminButton.after(form);
+            let saveButton = $('#saveButton');
+            let cancelButton = $('#cancelButton');
+            //get value of form
+            let getCatName = $("#getCatName").val();
+            let getCatUrl = $("#getCatUrl").val();
+            let getCatClicks = $("#getCatClicks").val();
+            saveButton.off().on("click", function(){
+                octopus.updateCurrentCatWithNewValuesAndSaveAndRender(getCatName,getCatClicks,getCatUrl);
+            });
+            cancelButton.off().on("click", function(){
+                octopus.hideAdmin();
+            })
+
+
+        },
+        hideForm: function(){
+            let formDiv = $("#form");
+            formDiv.remove();
+        }
+    }
 
     octopus.init();
 
