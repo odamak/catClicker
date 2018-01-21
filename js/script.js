@@ -13,7 +13,7 @@ $(function () {
                 elem.photo = 'pictures/cat_picture' + i + '.jpeg';
                 this.cats.push(elem);
             }
-            currentCat = this.cats[0];
+            this.currentCat = this.cats[0];
             return this.cats;
         }
     };
@@ -28,6 +28,7 @@ $(function () {
             return model.currentCat;
         },
         setCurrentCat: function (catIndex) {
+            console.log("call of setCurrentCat"+catIndex);
             //save previous changes made on currentCat
             model.cats[model.currentCat.index] = model.currentCat
             //get the new selected cat and update value of currentCat
@@ -39,6 +40,8 @@ $(function () {
             return selectedCat;
         },
         updateCounterCurrentCat: function () {
+            console.log('-----------------------------');
+            console.log('call updateCounterCurrentCat');
             model.currentCat.clickCount += 1
             return (model.currentCat.clickCount);
         },
@@ -54,6 +57,7 @@ $(function () {
                 let buttonHtml = `<button id='button${i}'>${cats[i].name}</button>`;
                 $(buttonHtml).appendTo($("#catButtons"));
                 $("#button" + i).click(function () {
+                    console.log("clickbutton"+i);
                     octopus.setCurrentCat(i);
                 })
             }
@@ -62,17 +66,28 @@ $(function () {
 
     var viewCat = {
         render: function () {
+            console.log("render view cat");
             let currentCat = octopus.getCurrentCat();
             $("#cat-name").text(currentCat.name);
-            $("#cat-count").text(currentCat.clickCount);
+            $("#cat-count").text(`${currentCat.clickCount} clicks`);
             $("#cat-img").attr("src",currentCat.photo);
+            $("#cat-img").click(function () {
+                    console.log("click photo");
+                    octopus.updateCounterCurrentCat();
+                    $("#cat-count").text(`${currentCat.clickCount} clicks`);
+            })
         },
 
         init: function () {
             let cats = octopus.getCats();
+            let currentCat = octopus.getCurrentCat();
             $("#cat-name").text(cats[0].name);
-            $("#cat-count").text(cats[0].clickCount);
+            $("#cat-count").text(`${cats[0].clickCount} clicks`);
             $("#cat-img").attr("src",cats[0].photo);
+            $("#cat-img").click(function () {
+                    octopus.updateCounterCurrentCat();
+                    $("#cat-count").text(`${currentCat.clickCount} clicks`);
+            })
         }
     };
 
