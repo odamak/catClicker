@@ -73,8 +73,8 @@ $(function () {
             model.adminMode = false;
             viewAdmin.hideForm();
         },
-        testFunction: function() {
-            console.log("test call from admin to octopus");
+        resetButton: function(indexButton,newName) {
+            viewButton.resetButtonName(indexButton,newName);
         }
     };
 
@@ -94,6 +94,10 @@ $(function () {
                 })(i));
                 
             }
+        },
+        resetButtonName: function(indexButton,newName){
+            let buttonId = `#button${indexButton}`;
+            $(buttonId).html(newName);
         }
     }
 
@@ -159,9 +163,11 @@ $(function () {
             let cancelButton = $('#cancelButton');
             //get value of form
             saveButton.off().on("click", function(){
+                currentCat = octopus.getCurrentCat();
                 let getCatName = $("#getCatName").val();
                 let getCatUrl = $("#getCatUrl").val();
                 let getCatClicks = $("#getCatClicks").val();
+                if (getCatName!=currentCat.name) octopus.resetButton(currentCat.index,getCatName);
                 octopus.updateCurrentCatWithNewValuesAndSaveAndRender(getCatName,getCatClicks,getCatUrl);
             });
             cancelButton.off().on("click", function(){
