@@ -41,7 +41,8 @@ $(function () {
             return selectedCat;
         },
         updateCounterCurrentCatAndRender: function () {
-            model.currentCat.clickCount += 1;
+            console.log(parseInt(model.currentCat.clickCount) +1);
+            model.currentCat.clickCount = parseInt(model.currentCat.clickCount) + 1;
             viewCat.render();
             if (octopus.isAdminVisible()) viewAdmin.render();
             return (model.currentCat.clickCount);
