@@ -43,6 +43,7 @@ $(function () {
         updateCounterCurrentCatAndRender: function () {
             model.currentCat.clickCount += 1;
             viewCat.render();
+            if (octopus.isAdminVisible()) ViewAdmin.render();
             return (model.currentCat.clickCount);
         },
         updateCurrentCatWithNewValuesAndSaveAndRender: function(name, click, url) {
@@ -57,13 +58,21 @@ $(function () {
         getCats: function () {
             return (model.cats)
         },
+        isAdminVisible: function() {
+            return (model.adminMode);
+        },
         setAdminVisible: function () {
             model.adminMode = true;
+        },
+        renderAdminForm: function () {
             ViewAdmin.render();
         },
         hideAdmin: function() {
             model.adminMode = false;
             viewAdmin.hideForm();
+        },
+        testFunction: function() {
+            console.log("test call from admin to octopus");
         }
     };
 
@@ -114,7 +123,11 @@ $(function () {
             this.adminDiv = $("#admin");
             this.adminButton = $('#adminButton');
             this.adminButton.on( "click", function() {
-                octopus.setAdminVisible;
+                console.log(octopus.isAdminVisible);
+                if (!octopus.isAdminVisible()) {
+                    console.log("admin button click");
+                    octopus.renderAdminForm();
+                }
             });
 
 
@@ -124,7 +137,8 @@ $(function () {
             let nameCat = currentCat.name;
             let imgUrl = currentCat.photo;
             let clicks = currentCat.clickCount;
-            let form = `<div id="formDiv">
+            let form = 
+            `<form id="adminFormInserted">
             Name: <input id="getCatName" type="text" name="name" value="${nameCat}">
             <br>
             Img URL: <input id="getCatUrl" type="text" name="imgUrl" value="${imgUrl}">
@@ -133,9 +147,10 @@ $(function () {
             <br>
             <button id="saveButton">Save</button>
             <button id="cancelButton">Cancel</button>
-            </div>`
-            //add form to page
-            adminButton.after(form);
+            </form>`
+            if (octopus.isAdminVisible()) octopus.hideAdmin();
+            octopus.setAdminVisible();
+            $(form).appendTo($("#adminForm"))
             let saveButton = $('#saveButton');
             let cancelButton = $('#cancelButton');
             //get value of form
@@ -152,8 +167,8 @@ $(function () {
 
         },
         hideForm: function(){
-            let formDiv = $("#form");
-            formDiv.remove();
+            let formInserted = $("#adminFormInserted");
+            formInserted.remove();
         }
     }
 
