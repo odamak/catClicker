@@ -50,9 +50,11 @@ $(function () {
             model.currentCat.name = name;
             model.currentCat.clickCount = click;
             model.currentCat.photo = url;
-            let index = model.currentCat[index];
+            let getIndex = model.currentCat.index;
             //update cat in array and rerender view
-            octopus.setCurrentCat(index);
+            this.setCurrentCat(getIndex);
+            //admin form is already open so rerender it anyway
+            this.renderAdminForm();
 
         },
         getCats: function () {
