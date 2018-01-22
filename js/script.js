@@ -24,7 +24,7 @@ $(function () {
             model.init();
             viewButton.init();
             viewCat.init();
-            ViewAdmin.init();
+            viewAdmin.init();
         },
         getCurrentCat: function () {
             return model.currentCat;
@@ -43,7 +43,7 @@ $(function () {
         updateCounterCurrentCatAndRender: function () {
             model.currentCat.clickCount += 1;
             viewCat.render();
-            if (octopus.isAdminVisible()) ViewAdmin.render();
+            if (octopus.isAdminVisible()) viewAdmin.render();
             return (model.currentCat.clickCount);
         },
         updateCurrentCatWithNewValuesAndSaveAndRender: function(name, click, url) {
@@ -65,7 +65,7 @@ $(function () {
             model.adminMode = true;
         },
         renderAdminForm: function () {
-            ViewAdmin.render();
+            viewAdmin.render();
         },
         hideAdmin: function() {
             model.adminMode = false;
@@ -87,6 +87,7 @@ $(function () {
                 $("#button" + i).on( "click", (function(iCopy) {
                     return function() {
                         octopus.setCurrentCat(iCopy);
+                        if (octopus.isAdminVisible()) octopus.renderAdminForm();
                     };
                 })(i));
                 
@@ -118,7 +119,7 @@ $(function () {
         }
     };
 
-    var ViewAdmin = {
+    var viewAdmin = {
         init: function () {
             this.adminDiv = $("#admin");
             this.adminButton = $('#adminButton');
@@ -132,6 +133,7 @@ $(function () {
 
 
         },
+        //refactor in case adminVisible, do not render the whole form, just update input values
         render: function() {
             let currentCat = octopus.getCurrentCat();
             let nameCat = currentCat.name;
@@ -154,10 +156,10 @@ $(function () {
             let saveButton = $('#saveButton');
             let cancelButton = $('#cancelButton');
             //get value of form
-            let getCatName = $("#getCatName").val();
-            let getCatUrl = $("#getCatUrl").val();
-            let getCatClicks = $("#getCatClicks").val();
             saveButton.off().on("click", function(){
+                let getCatName = $("#getCatName").val();
+                let getCatUrl = $("#getCatUrl").val();
+                let getCatClicks = $("#getCatClicks").val();
                 octopus.updateCurrentCatWithNewValuesAndSaveAndRender(getCatName,getCatClicks,getCatUrl);
             });
             cancelButton.off().on("click", function(){
